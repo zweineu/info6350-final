@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(MaterialApp(home: BMICalculatorResults(bmiValue: 20.4,)));
-// }
+import 'package:flutter/rendering.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class BMICalculatorResults extends StatelessWidget {
   final double bmiValue;
+  final int height;
 
-  BMICalculatorResults({Key? key, required this.bmiValue}) : super(key: key);
+  BMICalculatorResults({Key? key, required this.bmiValue, required this.height}) : super(key: key);
 
   String getBMICategory(double bmi) {
     if (bmi < 18.5) {
@@ -21,9 +21,18 @@ class BMICalculatorResults extends StatelessWidget {
     }
   }
 
+  double getWeightRangeMin(int height) {
+    return 18.5 * height/100 * height/100;
+  }
+  double getWeightRangeMax(int height) {
+    return 25 * height/100 * height/100;
+  }
+
   @override
   Widget build(BuildContext context) {
     String bmiCategory = getBMICategory(bmiValue);
+    double weightRangeMin = getWeightRangeMin(height);
+    double weightRangeMax = getWeightRangeMax(height);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -49,7 +58,7 @@ class BMICalculatorResults extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Text(
               "Your BMI is ${bmiValue.toStringAsFixed(1)}, indicating your weight is in the $bmiCategory category for adults of your height."
-              "\n\nFor your height, a normal weight range would be from 53.5 to 72 kilograms."
+              "\n\nFor your height, a normal weight range would be from ${weightRangeMin.round()} to ${weightRangeMax.round()} kilograms."
               "\n\nMaintaining a healthy weight may reduce the risk of chronic diseases associated with overweight and obesity.",
               style: TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
@@ -57,7 +66,7 @@ class BMICalculatorResults extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              // Handle "Find Out More" action
+
             },
             child: Text("Find Out More", style: TextStyle(fontSize: 16)),
             style: ElevatedButton.styleFrom(
@@ -69,5 +78,30 @@ class BMICalculatorResults extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Future<String> getGPTResponse(double bmiValue) async {
+var headers = {
+    'Authorization': 'Bearer', // Replace with your actual API key
+    'Content-Type': 'application/json',
+  };
+
+  var request = http.Request('POST', Uri.parse('https://api.openai.com/v1/engines/text-davinci-002/completions'));
+  request.body = json.encode({
+    "prompt": "Provide insights for a BMI value of $bmiValue:",
+    "temperature": 0.7,
+    "max_tokens": 150,
+  });
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var jsonResponse = await response.stream.bytesToString();
+    var jsonData = json.decode(jsonResponse);
+    return jsonData['choices'][0]['text'];
+  } else {
+    return 'Failed to get response from the API';
   }
 }

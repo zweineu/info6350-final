@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BMICalculatorResults(bmiValue: bmiValue),
+          builder: (context) => BMICalculatorResults(bmiValue: bmiValue, height: appState.height.round(),),
         ),
       );
     }
