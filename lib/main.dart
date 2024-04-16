@@ -3,6 +3,8 @@ import 'gender_selection.dart';
 import 'lets_go_buttion.dart';
 import 'number_input_with_increment_decrement.dart';
 import 'height_slider.dart';
+import 'results_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,15 +16,33 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'BMI Calculator',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'BMI Calculator'),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => MyAppState(),
+        child: MaterialApp(
+          title: 'BMI Calculator',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: const MyHomePage(title: 'BMI Calculator'),
+        ));
   }
+}
+
+class MyAppState extends ChangeNotifier {
+  double weight = 70;
+  double height = 175;
+
+  void setWeight(double value) {
+    weight = value;
+    notifyListeners();
+  }
+
+  void setHeight(double value) {
+    height = value;
+    notifyListeners();
+  }
+  
 }
 
 class MyHomePage extends StatefulWidget {
@@ -36,6 +56,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var weight = appState.weight;
+    var height = appState.height;
+    void onLetsGoPressed(BuildContext context) {
+      double bmiValue = calculateBMI(weight, height);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BMICalculatorResults(bmiValue: bmiValue),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -56,57 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
             const BodyMeasurementCard(),
             const SizedBox(height: 20),
-            LetsGoButton(onTap: () {}),
+            LetsGoButton(onTap: () {
+              onLetsGoPressed(context);
+            }),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class HeightCard extends StatelessWidget {
-  const HeightCard({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Card(
-      elevation: 4.0,
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: HeightSlider(),
-      ),
-    );
-  }
-}
-
-class WeightCard extends StatelessWidget {
-  const WeightCard({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Card(
-      elevation: 4.0,
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: NumberInputWithIncrementDecrement(label: 'Weight'),
-      ),
-    );
-  }
-}
-
-class AgeCard extends StatelessWidget {
-  const AgeCard({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Card(
-      elevation: 4.0,
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: NumberInputWithIncrementDecrement(label: 'Age'),
       ),
     );
   }
@@ -117,6 +104,7 @@ class BodyMeasurementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
     return Container(
         margin: const EdgeInsets.all(16.0),
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -139,7 +127,7 @@ class BodyMeasurementCard extends StatelessWidget {
                     ],
                   ),
                   // This will be the height slider container
-                  child: HeightSlider(),
+                  child: const HeightSlider(),
                 ),
               ),
               const SizedBox(
@@ -160,8 +148,10 @@ class BodyMeasurementCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const NumberInputWithIncrementDecrement(
-                          label: 'Weight'),
+                      child: NumberInputWithIncrementDecrement(
+                          label: 'Weight',defaultValue: 50,onChanged: (int newWeight){
+                            appState.setWeight(newWeight.toDouble());
+                          },),
                     ),
                     const SizedBox(
                         height: 16), // Spacing between weight and age
@@ -178,8 +168,10 @@ class BodyMeasurementCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const NumberInputWithIncrementDecrement(
-                            label: 'Age')),
+                        child: NumberInputWithIncrementDecrement(
+                            label: 'Age',defaultValue: 20,onChanged: (newAge){
+                              // Handle age change
+                            },)),
                   ],
                 ),
               ),
@@ -187,4 +179,11 @@ class BodyMeasurementCard extends StatelessWidget {
           ),
         ));
   }
+}
+
+double calculateBMI(double weight, double height) {
+  // Height in cm to meters conversion
+  double heightInMeters = height / 100;
+  // BMI calculation
+  return weight / (heightInMeters * heightInMeters);
 }

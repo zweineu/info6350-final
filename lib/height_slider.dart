@@ -1,4 +1,6 @@
+import 'package:bmi_calculator/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HeightSlider extends StatefulWidget {
   const HeightSlider({super.key});
@@ -12,6 +14,7 @@ class _HeightSliderState extends State<HeightSlider> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
     return Column(
       children: [
         const SizedBox(height: 8), // Spacing from the top
@@ -36,6 +39,7 @@ class _HeightSliderState extends State<HeightSlider> {
                     onChanged: (value) {
                       setState(() {
                         height = value;
+                        appState.setHeight(value);
                       });
                     },
                   ),
@@ -44,7 +48,7 @@ class _HeightSliderState extends State<HeightSlider> {
                 flex: 3,
                 child: Text(
                   '${height.toStringAsFixed(1)} cm',
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ))
           ],
         ))

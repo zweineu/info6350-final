@@ -2,26 +2,42 @@ import 'package:flutter/material.dart';
 
 class NumberInputWithIncrementDecrement extends StatefulWidget {
   final String label;
-
-  const NumberInputWithIncrementDecrement({Key? key, required this.label}) : super(key: key);
+  final int defaultValue;
+  final Function(int) onChanged;
+  const NumberInputWithIncrementDecrement(
+      {Key? key,
+      required this.label,
+      required this.defaultValue,
+      required this.onChanged})
+      : super(key: key);
 
   @override
-  _NumberInputWithIncrementDecrementState createState() => _NumberInputWithIncrementDecrementState();
+  _NumberInputWithIncrementDecrementState createState() =>
+      _NumberInputWithIncrementDecrementState();
 }
 
-class _NumberInputWithIncrementDecrementState extends State<NumberInputWithIncrementDecrement> {
-  int value = 20; // Default value for weight/age
+class _NumberInputWithIncrementDecrementState
+    extends State<NumberInputWithIncrementDecrement> {
+  late int value; // Default value for weight/age
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.defaultValue;
+  }
 
   void _increment() {
     setState(() {
       value++;
     });
+    widget.onChanged(value);
   }
 
   void _decrement() {
     setState(() {
       if (value > 0) value--;
     });
+    widget.onChanged(value);
   }
 
   @override
