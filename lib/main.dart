@@ -118,39 +118,14 @@ class BodyMeasurementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child:IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment
-              .stretch, 
-        children: [
-          Expanded(
-            child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 4,
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                // This will be the height slider container
-                child: const RotatedBox(
-                  quarterTurns: -1,
-                  child: HeightSlider(),
-                )),
-          ),
-          const SizedBox(
-              width: 16), // Spacing between height slider and number inputs
-          Expanded(
-            child: Column(
-              children: [
-                Container(
+        margin: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8.0),
@@ -163,30 +138,53 @@ class BodyMeasurementCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child:
-                      const NumberInputWithIncrementDecrement(label: 'Weight'),
+                  // This will be the height slider container
+                  child: HeightSlider(),
                 ),
-                const SizedBox(height: 16), // Spacing between weight and age
-                Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 4,
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+              ),
+              const SizedBox(
+                  width: 16), // Spacing between height slider and number inputs
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 4,
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const NumberInputWithIncrementDecrement(
+                          label: 'Weight'),
                     ),
-                    child:
-                        const NumberInputWithIncrementDecrement(label: 'Age')),
-              ],
-            ),
+                    const SizedBox(
+                        height: 16), // Spacing between weight and age
+                    Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 4,
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const NumberInputWithIncrementDecrement(
+                            label: 'Age')),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 }
