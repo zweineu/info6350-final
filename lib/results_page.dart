@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(home: BMICalculatorResults(bmiValue: 20.4,)));
-}
+// void main() {
+//   runApp(MaterialApp(home: BMICalculatorResults(bmiValue: 20.4,)));
+// }
 
 class BMICalculatorResults extends StatelessWidget {
   final double bmiValue;

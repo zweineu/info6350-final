@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class NumberInputWithIncrementDecrement extends StatefulWidget {
   final String label;
@@ -19,6 +20,7 @@ class NumberInputWithIncrementDecrement extends StatefulWidget {
 class _NumberInputWithIncrementDecrementState
     extends State<NumberInputWithIncrementDecrement> {
   late int value; // Default value for weight/age
+  Timer? timer;
 
   @override
   void initState() {
@@ -38,6 +40,17 @@ class _NumberInputWithIncrementDecrementState
       if (value > 0) value--;
     });
     widget.onChanged(value);
+  }
+
+  void startTimer(void Function() updateValue) {
+    timer?.cancel();
+    timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      updateValue();
+    });
+  }
+
+  void stopTimer() {
+    timer?.cancel();
   }
 
   @override
@@ -60,13 +73,21 @@ class _NumberInputWithIncrementDecrementState
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.remove, color: Colors.blue),
-              onPressed: _decrement,
+            GestureDetector(
+              onLongPressStart: (details) => startTimer(_decrement),
+              onLongPressEnd: (details) => stopTimer(),
+              child: IconButton(
+                icon: const Icon(Icons.remove, color: Colors.blue),
+                onPressed: _decrement,
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.add, color: Colors.blue),
-              onPressed: _increment,
+            GestureDetector(
+              onLongPressStart: (details) => startTimer(_increment),
+              onLongPressEnd: (details) => stopTimer(),
+              child: IconButton(
+                icon: const Icon(Icons.add, color: Colors.blue),
+                onPressed: _increment,
+              ),
             ),
           ],
         ),
