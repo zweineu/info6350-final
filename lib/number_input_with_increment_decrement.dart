@@ -13,7 +13,7 @@ class NumberInputWithIncrementDecrement extends StatefulWidget {
       : super(key: key);
 
   @override
-  _NumberInputWithIncrementDecrementState createState() =>
+  State<NumberInputWithIncrementDecrement> createState() =>
       _NumberInputWithIncrementDecrementState();
 }
 

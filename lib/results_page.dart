@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class BMICalculatorResults extends StatelessWidget {
   final double bmiValue;
   final int height;
 
-  BMICalculatorResults({Key? key, required this.bmiValue, required this.height}) : super(key: key);
+  const BMICalculatorResults({Key? key, required this.bmiValue, required this.height})
+      : super(key: key);
 
   String getBMICategory(double bmi) {
     if (bmi < 18.5) {
@@ -22,10 +23,11 @@ class BMICalculatorResults extends StatelessWidget {
   }
 
   double getWeightRangeMin(int height) {
-    return 18.5 * height/100 * height/100;
+    return 18.5 * height / 100 * height / 100;
   }
+
   double getWeightRangeMax(int height) {
-    return 25 * height/100 * height/100;
+    return 25 * height / 100 * height / 100;
   }
 
   @override
@@ -40,7 +42,7 @@ class BMICalculatorResults extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: Text("Back"),
+        title: const Text("Back"),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -48,32 +50,32 @@ class BMICalculatorResults extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Your BMI is", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
-          SizedBox(height: 20),
+          const Text("Your BMI is",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 20),
           // You might use a package like `percent_indicator` to draw circular progress bar
-          Text(bmiValue.toStringAsFixed(1), style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
-          Text(bmiCategory, style: TextStyle(fontSize: 24, color: Colors.blue)),
-          SizedBox(height: 20),
+          Text(bmiValue.toStringAsFixed(1),
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
+          Text(bmiCategory, style: const TextStyle(fontSize: 24, color: Colors.blue)),
+          const SizedBox(height: 20),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               "Your BMI is ${bmiValue.toStringAsFixed(1)}, indicating your weight is in the $bmiCategory category for adults of your height."
               "\n\nFor your height, a normal weight range would be from ${weightRangeMin.round()} to ${weightRangeMax.round()} kilograms."
               "\n\nMaintaining a healthy weight may reduce the risk of chronic diseases associated with overweight and obesity.",
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-
-            },
-            child: Text("Find Out More", style: TextStyle(fontSize: 16)),
+            onPressed: () {},
             style: ElevatedButton.styleFrom(
-              primary: Colors.blue,
-              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              textStyle: TextStyle(fontSize: 18),
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              textStyle: const TextStyle(fontSize: 18),
             ),
+            child: const Text("Find Out More", style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
@@ -82,12 +84,15 @@ class BMICalculatorResults extends StatelessWidget {
 }
 
 Future<String> getGPTResponse(double bmiValue) async {
-var headers = {
+  var headers = {
     'Authorization': 'Bearer', // Replace with your actual API key
     'Content-Type': 'application/json',
   };
 
-  var request = http.Request('POST', Uri.parse('https://api.openai.com/v1/engines/text-davinci-002/completions'));
+  var request = http.Request(
+      'POST',
+      Uri.parse(
+          'https://api.openai.com/v1/engines/text-davinci-002/completions'));
   request.body = json.encode({
     "prompt": "Provide insights for a BMI value of $bmiValue:",
     "temperature": 0.7,

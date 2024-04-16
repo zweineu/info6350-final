@@ -6,7 +6,7 @@ class HeightSlider extends StatefulWidget {
   const HeightSlider({super.key});
 
   @override
-  _HeightSliderState createState() => _HeightSliderState();
+  State<HeightSlider> createState() => _HeightSliderState();
 }
 
 class _HeightSliderState extends State<HeightSlider> {
