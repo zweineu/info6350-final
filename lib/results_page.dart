@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:percent_indicator/percent_indicator.dart';
+
 class BMICalculatorResults extends StatelessWidget {
   final double bmiValue;
   final int height;
@@ -50,13 +52,33 @@ class BMICalculatorResults extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("Your BMI is",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+          CircularPercentIndicator(
+            radius: 120.0,
+            lineWidth: 13.0,
+            animation: true,
+            percent: bmiValue / 50,
+            center:
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      bmiValue.toStringAsFixed(1),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 32.0),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(bmiCategory, style: const TextStyle(fontSize: 24, color: Colors.blue)),
+                  ],
+                ),
+            circularStrokeCap: CircularStrokeCap.round,
+            progressColor: Colors.blue,
+          ),
+          // const Text("Your BMI is",
+          //     style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
           const SizedBox(height: 20),
           // You might use a package like `percent_indicator` to draw circular progress bar
-          Text(bmiValue.toStringAsFixed(1),
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
-          Text(bmiCategory, style: const TextStyle(fontSize: 24, color: Colors.blue)),
+          // Text(bmiValue.toStringAsFixed(1),
+          //     style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(16),
@@ -68,14 +90,21 @@ class BMICalculatorResults extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              textStyle: const TextStyle(fontSize: 18),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue, // Text color
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                ),
+              ),
+              child: const Text("Find Out More", style: TextStyle(fontSize: 16)),
             ),
-            child: const Text("Find Out More", style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
