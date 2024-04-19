@@ -1,3 +1,4 @@
+import 'package:bmi_calculator/bmi_record.dart';
 import 'package:flutter/material.dart';
 import 'gender_selection.dart';
 import 'lets_go_buttion.dart';
@@ -8,7 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
+import 'bmi_history_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +33,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
           routes: {
             '/': (context) => MyHomePage(title: 'BMI Calculator'),
+            '/history': (context) => HistoryPage(userId: FirebaseAuth.instance.currentUser!.uid),
             '/login': (context) => SignInScreen(
               providers: providers,
               actions: [
@@ -46,7 +50,6 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   double weight = 70;
   double height = 175;
-  User? user;
 
   void setWeight(double value) {
     weight = value;
@@ -57,12 +60,6 @@ class MyAppState extends ChangeNotifier {
     height = value;
     notifyListeners();
   }
-
-  void setUser(User user){
-    this.user = user;
-    notifyListeners();
-  }
-  
 }
 
 class MyHomePage extends StatefulWidget {
@@ -79,8 +76,24 @@ class _MyHomePageState extends State<MyHomePage> {
     var appState = context.watch<MyAppState>();
     var weight = appState.weight;
     var height = appState.height;
-    void onLetsGoPressed(BuildContext context) {
+    void onLetsGoPressed(BuildContext context) async{
       double bmiValue = calculateBMI(weight, height);
+      // Check if user is logged in
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        BMIRecord record = BMIRecord(
+          userId: user.uid,
+          weight: weight,
+          bmi: bmiValue,
+          date: DateTime.now(),
+        );
+
+        // Save the record
+        await saveBMIRecord(record);
+
+        // Ensure the widget is still mounted before navigating
+        if (!mounted) return;
+      }
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -207,3 +220,10 @@ double calculateBMI(double weight, double height) {
   // BMI calculation
   return weight / (heightInMeters * heightInMeters);
 }
+
+Future<void> saveBMIRecord(BMIRecord record) async {
+  var collection = FirebaseFirestore.instance.collection('bmiRecords');
+  await collection.add(record.toMap());
+}
+
+

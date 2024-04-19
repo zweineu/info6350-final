@@ -100,6 +100,10 @@ class BMICalculatorResults extends StatelessWidget {
                 if(FirebaseAuth.instance.currentUser == null){
                   Navigator.pushReplacementNamed(context, '/login');
                 }
+                else
+                  {
+                    Navigator.pushReplacementNamed(context, '/history');
+                  }
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
