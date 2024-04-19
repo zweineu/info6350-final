@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "130727325379",
+    "project_id": "neu-info6350-f3e24",
+    "storage_bucket": "neu-info6350-f3e24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130727325379:android:37d6f6d034e40fda06fc76",
+        "android_client_info": {
+          "package_name": "com.example.bmi_calculator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA0fYAuW42KBoWN0sTJhu8dMRL5D_aSls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130727325379:android:94ba0567c7ec487e06fc76",
+        "android_client_info": {
+          "package_name": "com.example.firebase_demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA0fYAuW42KBoWN0sTJhu8dMRL5D_aSls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

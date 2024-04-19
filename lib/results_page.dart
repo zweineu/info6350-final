@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class BMICalculatorResults extends StatelessWidget {
   final double bmiValue;
   final int height;
 
-  const BMICalculatorResults({Key? key, required this.bmiValue, required this.height})
+  BMICalculatorResults({Key? key, required this.bmiValue, required this.height})
       : super(key: key);
 
   String getBMICategory(double bmi) {
@@ -37,6 +38,7 @@ class BMICalculatorResults extends StatelessWidget {
     String bmiCategory = getBMICategory(bmiValue);
     double weightRangeMin = getWeightRangeMin(height);
     double weightRangeMax = getWeightRangeMax(height);
+    String buttonText = FirebaseAuth.instance.currentUser == null? 'Login':'History';
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -44,9 +46,9 @@ class BMICalculatorResults extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text("Back"),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        title: const Text('Your BMI Result')
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +96,11 @@ class BMICalculatorResults extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 16.0),
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                if(FirebaseAuth.instance.currentUser == null){
+                  Navigator.pushReplacementNamed(context, '/login');
+                }
+              },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.blue, // Text color
@@ -103,39 +109,11 @@ class BMICalculatorResults extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                 ),
               ),
-              child: const Text("Find Out More", style: TextStyle(fontSize: 16)),
+              child: Text(buttonText, style: TextStyle(fontSize: 16)),
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-Future<String> getGPTResponse(double bmiValue) async {
-  var headers = {
-    'Authorization': 'Bearer', // Replace with your actual API key
-    'Content-Type': 'application/json',
-  };
-
-  var request = http.Request(
-      'POST',
-      Uri.parse(
-          'https://api.openai.com/v1/engines/text-davinci-002/completions'));
-  request.body = json.encode({
-    "prompt": "Provide insights for a BMI value of $bmiValue:",
-    "temperature": 0.7,
-    "max_tokens": 150,
-  });
-  request.headers.addAll(headers);
-
-  http.StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    var jsonResponse = await response.stream.bytesToString();
-    var jsonData = json.decode(jsonResponse);
-    return jsonData['choices'][0]['text'];
-  } else {
-    return 'Failed to get response from the API';
   }
 }

@@ -5,26 +5,40 @@ import 'number_input_with_increment_decrement.dart';
 import 'height_slider.dart';
 import 'results_page.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final providers=[EmailAuthProvider()];
     return ChangeNotifierProvider(
         create: (context) => MyAppState(),
         child: MaterialApp(
-          title: 'BMI Calculator',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: const MyHomePage(title: 'BMI Calculator'),
+          initialRoute: '/',
+          routes: {
+            '/': (context) => MyHomePage(title: 'BMI Calculator'),
+            '/login': (context) => SignInScreen(
+              providers: providers,
+              actions: [
+                AuthStateChangeAction((context, state) {
+                  Navigator.pushReplacementNamed(context, '/');
+                })
+              ],
+            ),
+          },
         ));
   }
 }
@@ -32,6 +46,7 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   double weight = 70;
   double height = 175;
+  User? user;
 
   void setWeight(double value) {
     weight = value;
@@ -40,6 +55,11 @@ class MyAppState extends ChangeNotifier {
 
   void setHeight(double value) {
     height = value;
+    notifyListeners();
+  }
+
+  void setUser(User user){
+    this.user = user;
     notifyListeners();
   }
   
