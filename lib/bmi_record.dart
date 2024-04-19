@@ -4,7 +4,11 @@ class BMIRecord {
   final DateTime date;
   final String userId;
 
-  BMIRecord({required this.bmi,required this.weight, required this.date, required this.userId});
+  BMIRecord(
+      {required this.bmi,
+      required this.weight,
+      required this.date,
+      required this.userId});
 
   Map<String, dynamic> toMap() {
     return {

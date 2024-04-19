@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 class NumberInputWithIncrementDecrement extends StatefulWidget {
   final String label;
   final int defaultValue;
   final Function(int) onChanged;
+
   const NumberInputWithIncrementDecrement(
       {Key? key,
       required this.label,

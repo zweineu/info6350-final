@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'bmi_record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'bmi_record.dart';
 
 class HistoryPage extends StatelessWidget {
   final String userId;
@@ -29,7 +30,8 @@ class HistoryPage extends StatelessWidget {
               BMIRecord record = snapshot.data![index];
               return ListTile(
                 title: Text("BMI: ${record.bmi.toStringAsFixed(2)}"),
-                subtitle: Text("Date: ${DateFormat('yyyy-MM-dd').format(record.date)}"),
+                subtitle: Text(
+                    "Date: ${DateFormat('yyyy-MM-dd').format(record.date)}"),
               );
             },
           );
@@ -41,6 +43,9 @@ class HistoryPage extends StatelessWidget {
 
 Future<List<BMIRecord>> getBMIRecords(String userId) async {
   var collection = FirebaseFirestore.instance.collection('bmiRecords');
-  var snapshot = await collection.where('userId', isEqualTo: userId).orderBy('date', descending: true).get();
+  var snapshot = await collection
+      .where('userId', isEqualTo: userId)
+      .orderBy('date', descending: true)
+      .get();
   return snapshot.docs.map((doc) => BMIRecord.fromMap(doc.data())).toList();
 }

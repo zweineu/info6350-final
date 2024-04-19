@@ -1,8 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,7 +6,7 @@ class BMICalculatorResults extends StatelessWidget {
   final double bmiValue;
   final int height;
 
-  BMICalculatorResults({Key? key, required this.bmiValue, required this.height})
+  const BMICalculatorResults({Key? key, required this.bmiValue, required this.height})
       : super(key: key);
 
   String getBMICategory(double bmi) {
@@ -113,7 +109,7 @@ class BMICalculatorResults extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                 ),
               ),
-              child: Text(buttonText, style: TextStyle(fontSize: 16)),
+              child: Text(buttonText, style: const TextStyle(fontSize: 16)),
             ),
           ),
         ],

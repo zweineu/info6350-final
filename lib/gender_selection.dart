@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 enum Gender { male, female }
 
 class GenderSelection extends StatefulWidget {
@@ -52,7 +51,8 @@ class GenderButton extends StatelessWidget {
   final Function(Gender) onGenderTapped;
 
   const GenderButton(
-      {super.key, required this.gender,
+      {super.key,
+      required this.gender,
       this.selectedGender,
       required this.onGenderTapped});
 
@@ -69,12 +69,15 @@ class GenderButton extends StatelessWidget {
             horizontal: 4), // Margin for spacing between buttons
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            foregroundColor: isSelected ? Colors.white : Colors.black, backgroundColor: isSelected ? Colors.blue : Colors.grey[200],
+            foregroundColor: isSelected ? Colors.white : Colors.black,
+            backgroundColor: isSelected ? Colors.blue : Colors.grey[200],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8), // Rounded corners
             ),
-            elevation: isSelected ? 2 : 0, // Adjust elevation
-            padding: const EdgeInsets.symmetric(horizontal: 8), // Horizontal padding
+            elevation: isSelected ? 2 : 0,
+            // Adjust elevation
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8), // Horizontal padding
           ),
           onPressed: () => onGenderTapped(gender),
           child: Row(

@@ -48,7 +48,8 @@ class _HeightSliderState extends State<HeightSlider> {
                 flex: 3,
                 child: Text(
                   '${height.toStringAsFixed(1)} cm',
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ))
           ],
         ))

@@ -1,17 +1,18 @@
 import 'package:bmi_calculator/bmi_record.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'bmi_history_page.dart';
+import 'firebase_options.dart';
 import 'gender_selection.dart';
+import 'height_slider.dart';
 import 'lets_go_buttion.dart';
 import 'number_input_with_increment_decrement.dart';
-import 'height_slider.dart';
 import 'results_page.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'firebase_options.dart';
-import 'bmi_history_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           initialRoute: '/',
           routes: {
-            '/': (context) => MyHomePage(title: 'BMI Calculator'),
+            '/': (context) => const MyHomePage(title: 'BMI Calculator'),
             '/history': (context) =>
                 HistoryPage(userId: FirebaseAuth.instance.currentUser!.uid),
             '/login': (context) => SignInScreen(
@@ -174,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   );
                 }
-                return SizedBox
+                return const SizedBox
                     .shrink(); // Return an empty widget if not logged in
               },
             ),
