@@ -140,11 +140,6 @@ class _MyHomePageState extends State<MyHomePage> {
             StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                      child:
-                          CircularProgressIndicator()); // Center loading indicator
-                }
                 if (snapshot.hasData) {
                   // If the user is logged in, show both buttons in a Row
                   return Padding(
