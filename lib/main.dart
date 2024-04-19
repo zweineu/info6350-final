@@ -13,7 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'bmi_history_page.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -26,22 +26,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final providers=[EmailAuthProvider()];
+    final providers = [EmailAuthProvider()];
     return ChangeNotifierProvider(
         create: (context) => MyAppState(),
         child: MaterialApp(
           initialRoute: '/',
           routes: {
             '/': (context) => MyHomePage(title: 'BMI Calculator'),
-            '/history': (context) => HistoryPage(userId: FirebaseAuth.instance.currentUser!.uid),
+            '/history': (context) =>
+                HistoryPage(userId: FirebaseAuth.instance.currentUser!.uid),
             '/login': (context) => SignInScreen(
-              providers: providers,
-              actions: [
-                AuthStateChangeAction((context, state) {
-                  Navigator.pushReplacementNamed(context, '/');
-                })
-              ],
-            ),
+                  providers: providers,
+                  actions: [
+                    AuthStateChangeAction((context, state) {
+                      Navigator.pushReplacementNamed(context, '/');
+                    })
+                  ],
+                ),
           },
         ));
   }
@@ -64,6 +65,7 @@ class MyAppState extends ChangeNotifier {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
@@ -76,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var appState = context.watch<MyAppState>();
     var weight = appState.weight;
     var height = appState.height;
-    void onLetsGoPressed(BuildContext context) async{
+    void onLetsGoPressed(BuildContext context) async {
       double bmiValue = calculateBMI(weight, height);
       // Check if user is logged in
       User? user = FirebaseAuth.instance.currentUser;
@@ -97,7 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BMICalculatorResults(bmiValue: bmiValue, height: appState.height.round(),),
+          builder: (context) => BMICalculatorResults(
+            bmiValue: bmiValue,
+            height: appState.height.round(),
+          ),
         ),
       );
     }
@@ -116,15 +121,70 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 16), // Provides space from the top
+            const SizedBox(height: 10),
+            // Provides space from the top
             const GenderSelection(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             const BodyMeasurementCard(),
-            const SizedBox(height: 20),
-            LetsGoButton(onTap: () {
-              onLetsGoPressed(context);
-            }),
+            const SizedBox(height: 10),
+            LetsGoButton(
+              onTap: () {
+                onLetsGoPressed(context);
+              },
+              text: "Let's Go",
+            ),
+            const SizedBox(height: 10),
+            // Increased spacing before the row of buttons
+            StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child:
+                          CircularProgressIndicator()); // Center loading indicator
+                }
+                if (snapshot.hasData) {
+                  // If the user is logged in, show both buttons in a Row
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    // Add horizontal padding
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      // Space buttons evenly
+                      children: <Widget>[
+                        Expanded(
+                          // Use Expanded to give the buttons flexible widths
+                          child: LetsGoButton(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                  '/history'); // Navigate to the history page
+                            },
+                            text: 'History',
+                          ),
+                        ),
+                        Expanded(
+                          // Use Expanded to give the buttons flexible widths
+                          child: LetsGoButton(
+                            onTap: () async {
+                              await FirebaseAuth.instance.signOut();
+                              Navigator.of(context).pushReplacementNamed(
+                                  '/'); // Navigate back to home or login page after logging out
+                            },
+                            text: 'Log Out',
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return SizedBox
+                    .shrink(); // Return an empty widget if not logged in
+              },
+            ),
+            const SizedBox(height: 10),
+            // Additional spacing at the bottom for better layout
           ],
         ),
       ),
@@ -182,9 +242,12 @@ class BodyMeasurementCard extends StatelessWidget {
                         ],
                       ),
                       child: NumberInputWithIncrementDecrement(
-                          label: 'Weight',defaultValue: 50,onChanged: (int newWeight){
-                            appState.setWeight(newWeight.toDouble());
-                          },),
+                        label: 'Weight',
+                        defaultValue: 50,
+                        onChanged: (int newWeight) {
+                          appState.setWeight(newWeight.toDouble());
+                        },
+                      ),
                     ),
                     const SizedBox(
                         height: 16), // Spacing between weight and age
@@ -202,9 +265,12 @@ class BodyMeasurementCard extends StatelessWidget {
                           ],
                         ),
                         child: NumberInputWithIncrementDecrement(
-                            label: 'Age',defaultValue: 20,onChanged: (newAge){
-                              // Handle age change
-                            },)),
+                          label: 'Age',
+                          defaultValue: 20,
+                          onChanged: (newAge) {
+                            // Handle age change
+                          },
+                        )),
                   ],
                 ),
               ),
@@ -225,5 +291,3 @@ Future<void> saveBMIRecord(BMIRecord record) async {
   var collection = FirebaseFirestore.instance.collection('bmiRecords');
   await collection.add(record.toMap());
 }
-
-

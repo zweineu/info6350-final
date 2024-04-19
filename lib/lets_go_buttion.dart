@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class LetsGoButton extends StatelessWidget {
   final VoidCallback onTap;
+  final String text;
 
-  const LetsGoButton({super.key, required this.onTap});
+  const LetsGoButton({super.key, required this.onTap, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +21,8 @@ class LetsGoButton extends StatelessWidget {
           ),
         ),
         onPressed: onTap,
-        child: const Text(
-          "Let's Go",
+        child: Text(
+          text,
           style: TextStyle(fontSize: 18),
         ),
       ),
