@@ -41,6 +41,7 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_ui_auth: ^1.13.1
   cloud_firestore: ^4.15.8
+  syncfusion_flutter_charts: ^25.1.40
 
 dev_dependencies:
   flutter_test:
